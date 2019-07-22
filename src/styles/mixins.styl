@@ -1,0 +1,99 @@
+clear() {
+    display: block;
+    content: '';
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+}
+center() {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+ellipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+}
+clamp(column) {
+    // word-spacing: -3px;
+    letter-spacing: 0px;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: column;
+}
+webkit-box() {
+    box-sizing: border-box;
+}
+align-center() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+mval = 5 10 15 20 25 30 35 40;
+for val in mval {
+    {'.pt-' + val} {
+        padding-top: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.pr-' + val} {
+        padding-right: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.pl-' + val} {
+        padding-left: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.pb-' + val} {
+        padding-bottom: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.ps-' + val} {
+        padding: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.plr-' + val} {
+        padding-left: unquote('' + val + 'px');
+        padding-right: unquote('' + val + 'px');
+        webkit-box();
+    }
+    {'.ptb-' + val} {
+        padding-top: unquote('' + val + 'px');
+        padding-bottom: unquote('' + val + 'px');
+        webkit-box();
+    }
+}
+for val in mval {
+    {'.mt-' + val} {
+        margin-top: unquote('' + val + 'px');
+    }
+    {'.mr-' + val} {
+        margin-right: unquote('' + val + 'px');
+    }
+    {'.ml-' + val} {
+        margin-left: unquote('' + val + 'px');
+    }
+    {'.mb-' + val} {
+        margin-bottom: unquote('' + val + 'px');
+    }
+    {'.ms-' + val} {
+        margin: unquote('' + val + 'px');
+    }
+    {'.mlr-' + val} {
+        margin-left: unquote('' + val + 'px');
+        margin-right: unquote('' + val + 'px');
+    }
+    {'.mtb-' + val} {
+        margin-top: unquote('' + val + 'px');
+        margin-bottom: unquote('' + val + 'px');
+    }
+}

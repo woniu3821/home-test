@@ -1,0 +1,312 @@
+swagger: '2.0'
+info:
+  title: CMP Devops API
+  description: The API definition for the Devops Console of Cloud Manage Platform.
+  version: '1.0.0'
+# the domain of the service
+host: res.wisedu.com:8000
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /wec-smmp-home
+
+paths:
+  /system/getBasicInfo:
+    post:
+      summary: 获取基本信息
+      description: '获取基本信息'
+      operationId: 'getBasicInfo'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      tags:
+        - ''
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/basicInfoResponse'
+
+  /school/getSchoolInfo:
+    post:
+      summary: 获取学校信息
+      description: '获取学校信息'
+      operationId: 'getSchoolInfo'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      tags:
+        - ''
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/schoolInfoResponse'
+
+  /school/getPeopleInfo:
+    post:
+      summary: 获取人员信息
+      description: '获取人员信息'
+      operationId: 'getPeopleInfo'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      tags:
+        - ''
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/peopleInfoResponse'
+
+  /school/getAppInfo:
+    post:
+      summary: 获取应用信息
+      description: '获取应用信息'
+      operationId: 'getAppInfo'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      tags:
+        - ''
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/appInfoResponse'
+
+  /greeting/getGreeting:
+    post:
+      summary: 获取问候语
+      description: '获取问候语'
+      operationId: 'getGreeting'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      tags:
+        - ''
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/stringResponse'
+
+definitions:
+  baseRequest:
+    type: object
+    properties:
+      wid:
+        description: ''
+        type: string
+      content:
+        description: '查询内容'
+        type: string
+      pageNumber:
+        type: integer
+        description: '分页页码'
+      pageSize:
+        type: integer
+        description: '分页大小'
+
+  baseResponse:
+    type: object
+    properties:
+      code:
+        x-chance-type: fixed
+        x-type-value: 0
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      wid:
+        type: string
+        description: '编号'
+
+  basicInfoResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+        pattern: '^(0)$'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      datas:
+        $ref: '#/definitions/basicInfoBean'
+
+  basicInfoBean:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/userInfoBean'
+      menus:
+        type: array
+        items:
+          $ref: '#/definitions/menuBean'
+      logoUrl:
+        type: string
+        description: 'logo地址'
+      schoolName:
+        type: string
+        description: '学校名称'
+
+  userInfoBean:
+    type: object
+    properties:
+      userWid:
+        type: string
+        title: 'hidden:true'
+      userId:
+        type: string
+        description: ' 标题'
+      userName:
+        type: string
+        description: ' 路径 '
+      userAvatar:
+        type: string
+        description: '地址'
+
+  menuBean:
+    type: object
+    properties:
+      wid:
+        type: string
+        title: 'hidden:true'
+      title:
+        type: string
+        description: ' 标题'
+      path:
+        type: string
+        description: ' 路径 '
+      url:
+        type: string
+        description: '地址'
+
+  schoolInfoResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+        pattern: '^(0)$'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      datas:
+        $ref: '#/definitions/schoolInfoBean'
+
+  schoolInfoBean:
+    type: object
+    properties:
+      schoolId:
+        type: string
+        description: 'schoolId'
+      schoolName:
+        type: string
+        description: '学校名称'
+      schoolBadgeUrl:
+        type: string
+        description: '校徽地址'
+      schoolLogoUrl:
+        type: string
+        description: 'logo地址'
+
+  peopleInfoResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+        pattern: '^(0)$'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      datas:
+        $ref: '#/definitions/peopleInfoBean'
+
+  peopleInfoBean:
+    type: object
+    properties:
+      staffCount:
+        type: integer
+        description: '教职工数量'
+      studentCount:
+        type: integer
+        description: '学生数量'
+      alumniCount:
+        type: integer
+        description: '校友数量'
+
+  appInfoResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+        pattern: '^(0)$'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      datas:
+        $ref: '#/definitions/appInfoBean'
+
+  appInfoBean:
+    type: object
+    properties:
+      basicAppCount:
+        type: integer
+        description: '基础应用数量'
+      cloudAppCount:
+        type: integer
+        description: '云应用数量'
+      selfAppCount:
+        type: integer
+        description: '自建应用数量'
+      serviceAppCount:
+        type: integer
+        description: '信息服务数量'
+      quickApps:
+        type: array
+        items:
+          $ref: '#/definitions/appBean'
+
+  appBean:
+    type: object
+    properties:
+      appId:
+        type: string
+        description: 'id'
+      appIconUrl:
+        type: string
+        description: '图标地址'
+      appName:
+        type: string
+        description: '应用名称'
+      description:
+        type: string
+        description: '描述'
+      entranceUrl:
+        type: string
+        description: '应用入口'
+
+  stringResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: '操作状态码（0：成功，其他：失败）'
+        pattern: '^(0)$'
+      message:
+        type: string
+        description: '请求失败相关信息'
+      datas:
+        type: string
+        description: '文本'

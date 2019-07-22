@@ -1,0 +1,64 @@
+@import '~@styles/variable';
+@import '~@styles/base';
+@import '~@styles/mixins';
+@import '~@styles/transitions';
+@keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+.loading-load {
+    animation: spin 1.8s linear infinite;
+}
+.loading-notice {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+.clear:after, .clear:before {
+    clear();
+}
+.cursor {
+    cursor: pointer;
+}
+// selector based on href name
+.width-1200 {
+    min-width: 1200px;
+    overflow-x: auto;
+    background: #fff;
+}
+.fixButton {
+    width: 100%;
+    position: absolute;
+    padding: 20px;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -1px 1px #ccc;
+}
+.border-base {
+    border-bottom: border();
+}
+.extra-btn {
+    font-size: 12px;
+    color: $primary-color;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.base-text {
+    font-size: 12px;
+    color: $primary-color;
+    cursor: pointer;
+}
+>>>.split::after {
+    content: '|';
+    display: inline-block;
+    margin: 0 5px 0;
+    font-size: 14px;
+    color: $grey-v3;
+}
+>>>.split:last-child::after {
+    display: none;
+}
