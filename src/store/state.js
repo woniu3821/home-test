@@ -1,4 +1,10 @@
 export default {
+    //完整路由数据
+    routers: [],
+    //导航数据
+    navList: [],
+    //菜单路由
+    menuList: [],
     access: "",
     tagNavList: [],
     breadCrumbList: [],

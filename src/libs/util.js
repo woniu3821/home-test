@@ -1,10 +1,101 @@
 import Cookies from "js-cookie";
+
+import Main from "@views/Main.vue";
+import router from "../router";
 // cookie保存的天数
 import config from "@utils/config";
 import { forEach, hasOneOf, objEqual } from "@/libs/tools";
 const { title, cookieExpires, useI18n } = config;
 
 export const TOKEN_KEY = "token";
+//处理转化路由数据
+export const setRoute = route => {
+    let translatorObj = (data, index) => ({
+        path: `/${data.path.split("#/")[1] || "home_0" + (index + 1)}`,
+        name: data.path.split("#/")[1] || `home_0${index + 1}`,
+        id: data.id,
+        parentId: data.parentId,
+        meta: {
+            icon: data.icon || "",
+            title: data.title,
+            url: data.path
+        },
+        component: Main
+    });
+
+    let parents = route.filter(item => item.parentId === "" && item.canUsed).map(translatorObj);
+
+    let children = route.filter(item => item.parentId !== "" && item.canUsed).map(translatorObj);
+    let translator = (parents, children) => {
+        parents.forEach(parent => {
+            children.forEach((current, index) => {
+                if (current.parentId === parent.id) {
+                    let temp = JSON.parse(JSON.stringify(children));
+                    temp.splice(index, 1);
+                    translator([current], temp);
+                    typeof parent.children !== "undefined"
+                        ? parent.children.push(current)
+                        : (parent.children = [current]);
+                }
+            });
+        });
+    };
+
+    translator(parents, children);
+
+    return parents;
+};
+
+/**
+ * 设置一级导航路由为子集的第一个路由
+ *  */
+export const getNavList = routes => {
+    let oldRoute = routes.filter(route => /home_0\d/.test(route.name));
+
+    let initNav = routes => {
+        for (let route of routes) {
+            if (/home_0\d/.test(route.name)) {
+                initNav(route.children);
+            }
+            if (route.children) {
+                route.name = route.children[0].name;
+                route.path = route.children[0].path;
+            }
+        }
+        return routes;
+    };
+    return initNav(oldRoute);
+};
+
+//注册路由
+export const registRouter = routes => {
+    //递归处理只有一个子集菜单的显示问题
+    let showAlways = data => {
+        data.forEach(item => {
+            if (item.children && item.children.length) {
+                if (item.children.length === 1) {
+                    item.meta.showAlways = true;
+                }
+                showAlways(item.children);
+            }
+        });
+        return data;
+    };
+    //此处需要注册不包含一级导航的完整路由
+    return new Promise(resolve => {
+        let menuRoute = routes.reduce((current, next) => {
+            if (/home_0\d/.test(next.name) && next.children) {
+                current = current.concat(next.children);
+            }
+            return current;
+        }, []);
+        let dealRoute = showAlways(menuRoute);
+        router.addRoutes(dealRoute);
+        router.onReady(function() {
+            resolve(dealRoute);
+        });
+    });
+};
 
 export const setToken = token => {
     Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 });

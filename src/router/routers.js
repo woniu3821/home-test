@@ -26,27 +26,5 @@ export default [
                 component: Main
             }
         ]
-    },
-    {
-        path: "/admin",
-        name: "admin",
-        meta: {
-            icon: "md-arrow-dropdown-circle",
-            title: "管理员设置"
-            // href: "https://lison16.github.io/iview-admin-doc/#/"
-            // showAlways: true
-        },
-        component: Main
-    },
-    {
-        path: "/domain",
-        name: "domain",
-        meta: {
-            icon: "md-arrow-dropdown-circle",
-            title: "域管理"
-            // href: "https://lison16.github.io/iview-admin-doc/#/"
-            // showAlways: true
-        },
-        component: Main
     }
 ];

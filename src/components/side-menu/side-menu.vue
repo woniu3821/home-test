@@ -13,7 +13,6 @@
         >
             <template v-for="item in menuList">
                 <template v-if="item.children && item.children.length === 1">
-
                     <side-menu-item
                         v-if="showChildren(item)"
                         :key="`menu-${item.name}`"
@@ -24,7 +23,8 @@
                         :name="getNameOrHref(item, true)"
                         :key="`menu-${item.children[0].name}`"
                     >
-                        <common-icon :type="item.children[0].icon || ''" /><span>{{ showTitle(item.children[0]) }}</span></menu-item>
+                        <common-icon :type="item.children[0].icon || ''" />
+                        <span>{{ showTitle(item.children[0]) }}</span></menu-item>
                 </template>
                 <template v-else>
                     <side-menu-item
@@ -158,7 +158,7 @@ export default {
             this.$nextTick(() => {
                 this.$refs.menu.updateOpened()
             })
-        }
+        },
     },
     mounted () {
         this.openedNames = getUnion(this.openedNames, this.getOpenedNamesByActiveName(name))

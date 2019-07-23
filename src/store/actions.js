@@ -6,13 +6,32 @@ import {
     INDEX_GET_GREETING_INFO
 } from "./types";
 
-// import { awaitWrap } from "@utils";
+import { setRoute, registRouter } from "@/libs/util";
+
+import axios from "@utils/ajax";
+
+import { awaitWrap } from "@utils";
 
 import { getBasicInfo, getSchoolInfo, getPeopleInfo, getAppInfo, getGreeting } from "@api/service";
 
-// import { Message } from "iview";
+import { Message } from "iview";
 
 export default {
+    async getRouter({ commit }, params = {}) {
+        const [err, datas] = await awaitWrap(axios.post("/router/list"));
+        if (err) {
+            Message.error(err || "导航初始化失败，请稍后重试！");
+            return;
+        }
+        const routers = setRoute(datas.rows);
+
+        const menuList = await registRouter(routers);
+
+        // console.log(menuList);
+
+        commit("setOriginRouter", routers);
+        commit("setMenuRouter", menuList);
+    },
     async [INDEX_GET_BASIC_INFO]({ commit }, params = {}) {
         const [err, datas] = await getBasicInfo(params);
         commit(INDEX_GET_BASIC_INFO, datas);

@@ -4,6 +4,7 @@
         <!-- 头部开始 -->
         <header class="layout__header">
             <Menu
+                v-model="activeName"
                 mode="horizontal"
                 :active-name="activeName"
                 @on-select="menuChange"
@@ -22,19 +23,14 @@
                             首页
                             </MenuItem>
                             <MenuItem
-                                name="admin"
-                                to="/admin"
+                                v-for="item in navList"
+                                :key="item.id"
+                                :name="item.name"
+                                :to="item.path"
+                                @click.native="setMenuList(item.children)"
                             >
-                            <Icon type="ios-keypad"></Icon>
-                            系统设置
-                            </MenuItem>
-                            <MenuItem name="3">
-                            <Icon type="ios-analytics"></Icon>
-                            Item 3
-                            </MenuItem>
-                            <MenuItem name="4">
-                            <Icon type="ios-paper"></Icon>
-                            Item 4
+                            <Icon :type="item.meta.icon"></Icon>
+                            <span>{{item.meta.title}}</span>
                             </MenuItem>
                         </nav>
                         <!-- 用户信息 -->
@@ -48,8 +44,11 @@
             </Menu>
         </header>
         <!-- 头部结束 -->
-        <transition name="slide">
-            <component :is="currentTabComponent"></component>
+        <transition name="fade">
+            <component
+                ref="home"
+                :is="currentTabComponent"
+            ></component>
         </transition>
     </div>
 </template>
@@ -62,7 +61,8 @@ import Index from '@views/Index.vue'
 import Home from '@views/Home.vue'
 
 import routers from '@/router/routers'
-import { mapMutations } from 'vuex'
+
+import { mapMutations, mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -91,11 +91,11 @@ export default {
             maxLogo: require('@assets/img/cp-logo-old.png'),
             componentName: 'Index',
             activeName: 'home',
-            navList: ['home', 'admin']
         }
     },
-
     computed: {
+        ...mapState(['menuList']),
+        ...mapGetters(['navList']),
         userAvatar () {
             return this.$store.state.user.userAvatar
         },
@@ -104,22 +104,32 @@ export default {
         },
         currentTabComponent () {
             return this.componentName
+        },
+        navListTag () {
+            return ['home', ...this.navList.map(item => item.name)]
+        },
+        routerList () {
+            return [...routers, ...this.menuList]
         }
     },
-
     methods: {
-        ...mapMutations(['setHomeRoute', 'setBreadCrumb']),
+        ...mapMutations(['setHomeRoute', 'setBreadCrumb', 'setMenuList']),
+        ...mapActions(['getRouter']),
         menuChange (name) {
-            if (name === '1' || name === 'home') {
+            if (name === 'home') {
                 this.componentName = 'Index'
             } else {
-                this.componentName = 'Home'
+                this.componentName = 'Home';
+                if (this.activeName === name) return;
+                this.$nextTick(() => {
+                    this.$refs.home.changeIframeUrl(name);
+                })
             }
         },
         //更新导航名称
         updateActiveName (name) {
             //解决name值不变化不更新问题
-            if (this.navList.includes(name)) {
+            if (this.navListTag.includes(name)) {
                 this.activeName = name;
             }
         },
@@ -141,14 +151,16 @@ export default {
 
     },
     async mounted () {
-        this.setHomeRoute(routers);
+
+        await this.getRouter();
+        this.setHomeRoute(this.routerList);
         this.setBreadCrumb(this.$route);
         // this.setTagNavList()
-        await this.getBasicInfo();
-        await this.getSchool();
-        await this.getApp();
-        await this.getPeople();
-        await this.getGreeting();
+        this.getBasicInfo();
+        this.getSchool();
+        this.getApp();
+        this.getPeople();
+        this.getGreeting();
     }
 }
 </script>

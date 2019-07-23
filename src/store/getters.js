@@ -9,11 +9,15 @@ import {
     routeEqual,
     getRouteTitleHandled,
     localSave,
-    localRead
+    localRead,
+    getNavList
 } from "@/libs/util";
 
-import routers from "@/router/routers";
+// import routers from "@/router/routers";
 
 export default {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.access)
+    menuList: (state, getters, rootState) => getMenuByRouter(rootState.menuList, rootState.access),
+    navList: (state, getters, rootState) => {
+        return getNavList(state.routers);
+    }
 };

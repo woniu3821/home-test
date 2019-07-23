@@ -1,15 +1,15 @@
 import {
     getBreadCrumbList,
     setTagNavListInLocalstorage,
-    getMenuByRouter,
+    // getMenuByRouter,
     getTagNavListFromLocalstorage,
-    getHomeRoute,
-    getNextRoute,
-    routeHasExist,
-    routeEqual,
-    getRouteTitleHandled,
-    localSave,
-    localRead
+    getHomeRoute
+    // getNextRoute,
+    // routeHasExist,
+    // routeEqual,
+    // getRouteTitleHandled,
+    // localSave,
+    // localRead,
 } from "@/libs/util";
 import config from "@utils/config";
 
@@ -30,7 +30,6 @@ export default {
     setHomeRoute(state, routes) {
         state.homeRoute = getHomeRoute(routes, homeName);
     },
-
     setTagNavList(state, list) {
         let tagList = [];
         if (list) {
@@ -45,7 +44,15 @@ export default {
         state.tagNavList = tagList;
         setTagNavListInLocalstorage([...tagList]);
     },
-
+    setOriginRouter(state, payload) {
+        state.routers = payload;
+    },
+    setMenuRouter(state, payload) {
+        state.menuList = payload;
+    },
+    setMenuList(state, payload) {
+        state.menuList = payload;
+    },
     [INDEX_GET_BASIC_INFO](state, payload) {
         state.menus = payload.menus;
         state.user = Object.assign(state.user, payload.user);

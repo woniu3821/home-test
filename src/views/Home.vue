@@ -26,15 +26,15 @@
                 <header-bar :collapsed="collapsed"></header-bar>
             </div>
             <div class="content__mian">
-                <keep-alive :include="cacheList">
-                    <iframe
-                        :src="iframe"
-                        frameborder="0"
-                        width="100%"
-                        height="100%"
-                        ref="iframe"
-                    ></iframe>
-                </keep-alive>
+                <!-- <keep-alive :include="cacheList"> -->
+                <iframe
+                    :src="iframe"
+                    frameborder="0"
+                    width="100%"
+                    height="100%"
+                    ref="iframe"
+                ></iframe>
+                <!-- </keep-alive> -->
             </div>
         </div>
     </div>
@@ -54,10 +54,9 @@ export default {
     data () {
         return {
             collapsed: false,
-
+            iframe: ''
         };
     },
-
     computed: {
         tagNavList () {
             return this.$store.state.tagNavList
@@ -68,14 +67,11 @@ export default {
         cacheList () {
             const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
             return list
-        },
-        iframe () {
-            return 'http://wecamp.wisedu.com/wec-smmp-sinfo/systemSetting/index.html'
         }
     },
     methods: {
-
         turnToPage (route) {
+
             let { name, params, query } = {}
             if (typeof route === 'string') name = route
             else {
@@ -83,6 +79,7 @@ export default {
                 params = route.params
                 query = route.query
             }
+
             if (name.indexOf('isTurnByHref_') > -1) {
                 window.open(name.split('_')[1])
                 return
@@ -91,7 +88,8 @@ export default {
                 name,
                 params,
                 query
-            })
+            });
+
         },
         listenIframeLoad () {
             this.$nextTick(() => {
@@ -107,6 +105,29 @@ export default {
                 }
             })
 
+        },
+        // TODO 此处urls有时候找不到需要排查原因，怀疑算法或者是异步数据导致
+        changeIframeUrl (name) {
+            //递归寻找url
+            let url = '';
+            let findUrl = (data, name) => {
+                for (let item of data) {
+                    if (item.name === name) {
+                        url = item.meta.url;
+                        break;
+                    } else if (item.children) {
+                        findUrl(item.children, name)
+                    } else {
+                        continue;
+                    }
+                }
+                return url;
+            }
+            let urls = findUrl(this.menuList, name);
+            console.log(name, urls)
+            if (url) {
+                this.iframe = urls;
+            }
         }
     },
     mounted () {

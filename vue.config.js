@@ -56,6 +56,10 @@ module.exports = {
                 // target: "http://172.20.6.88:8080",
                 // target: "https://www.easy-mock.com/mock/5d31907e3329c1415ac93f01/image", // easy-mock
                 changeOrigin: true
+            },
+            "/router": {
+                target: "https://www.easy-mock.com/mock/5d3670545ac09b4a39d5435e/router", // easy-mock
+                changeOrigin: true
             }
         }
     },
