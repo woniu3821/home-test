@@ -47,11 +47,17 @@ export default {
     setOriginRouter(state, payload) {
         state.routers = payload;
     },
-    setMenuRouter(state, payload) {
-        state.menuList = payload;
-    },
+    //更新左侧菜单
     setMenuList(state, payload) {
         state.menuList = payload;
+    },
+    /**
+     * 更新menu激活菜单
+     * @param {*} state
+     * @param {*} payload
+     */
+    setActiveName(state, payload) {
+        state.activeName = payload;
     },
     [INDEX_GET_BASIC_INFO](state, payload) {
         state.menus = payload.menus;

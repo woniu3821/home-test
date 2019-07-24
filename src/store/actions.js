@@ -30,7 +30,7 @@ export default {
         // console.log(menuList);
 
         commit("setOriginRouter", routers);
-        commit("setMenuRouter", menuList);
+        commit("setMenuList", menuList);
     },
     async [INDEX_GET_BASIC_INFO]({ commit }, params = {}) {
         const [err, datas] = await getBasicInfo(params);

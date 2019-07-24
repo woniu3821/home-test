@@ -4,7 +4,6 @@
         <!-- 头部开始 -->
         <header class="layout__header">
             <Menu
-                v-model="activeName"
                 mode="horizontal"
                 :active-name="activeName"
                 @on-select="menuChange"
@@ -73,24 +72,43 @@ export default {
     },
     watch: {
         '$route' (newRoute) {
-            // const { name, query, params, meta } = newRoute
+
+            const { name, query, params, meta } = newRoute
             // this.addTag({
             //     route: { name, query, params, meta },
             //     type: 'push'
             // })
-            this.updateActiveName(newRoute.name);
+            this.updateActiveName(name);
             this.setBreadCrumb(newRoute);
-            this.menuChange(newRoute.name);
+
+
+            if (name === 'home') {
+                this.menuChange(name);
+            } else {
+                //路由改变时候切换页面
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.$refs.home.changeIframeUrl(name);
+                        this.setActiveName(name);
+                        this.$refs.home.updateOpenName(name);
+                    })
+                })
+            }
+
             //   this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
-            // this.$refs.sideMenu.updateOpenName(newRoute.name)
+
         }
     },
+    // beforeRouteLeave (to, from, next) {
+    //     console.log(333)
+    //     next()
+    // },
     data () {
         return {
             collapsed: false,
             maxLogo: require('@assets/img/cp-logo-old.png'),
             componentName: 'Index',
-            activeName: 'home',
+            activeName: 'home'
         }
     },
     computed: {
@@ -113,17 +131,14 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['setHomeRoute', 'setBreadCrumb', 'setMenuList']),
+        ...mapMutations(['setHomeRoute', 'setBreadCrumb', 'setMenuList', 'setActiveName']),
         ...mapActions(['getRouter']),
         menuChange (name) {
+            //非首页切换到有导航的页面
             if (name === 'home') {
                 this.componentName = 'Index'
             } else {
                 this.componentName = 'Home';
-                if (this.activeName === name) return;
-                this.$nextTick(() => {
-                    this.$refs.home.changeIframeUrl(name);
-                })
             }
         },
         //更新导航名称

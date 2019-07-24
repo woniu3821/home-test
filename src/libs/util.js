@@ -65,6 +65,7 @@ export const getNavList = routes => {
         return routes;
     };
     return initNav(oldRoute);
+    // return oldRoute;
 };
 
 //注册路由

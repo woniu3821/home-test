@@ -5,6 +5,8 @@ export default {
     navList: [],
     //菜单路由
     menuList: [],
+    //激活的菜单
+    activeName: "",
     access: "",
     tagNavList: [],
     breadCrumbList: [],

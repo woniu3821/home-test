@@ -133,8 +133,10 @@ export default {
         handleSelect (name) {
             this.$emit('on-select', name)
         },
+        //TODO 解决子菜单不展示问题
         getOpenedNamesByActiveName (name) {
-            return this.$route.matched.map(item => item.name).filter(item => item !== name)
+            return this.$route.matched.map(item => item.name).filter(item => item !== name);
+            // return this.$route.matched.map(item => item.name)
         },
         updateOpenName (name) {
             if (name === this.$config.homeName) this.openedNames = []

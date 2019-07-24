@@ -12,7 +12,7 @@
                 <side-menu
                     accordion
                     ref="sideMenu"
-                    :active-name="$route.name"
+                    :active-name="activeLeftName"
                     :collapsed="collapsed"
                     @on-select="turnToPage"
                     :menu-list="menuList"
@@ -43,7 +43,6 @@
 import SideMenu from '@/components/side-menu';
 import HeaderBar from '@/components/header-bar'
 import { } from "@api/service";
-
 export default {
     components: {
         SideMenu,
@@ -54,10 +53,13 @@ export default {
     data () {
         return {
             collapsed: false,
-            iframe: ''
+            iframe: '',
         };
     },
     computed: {
+        activeLeftName () {
+            return this.$store.state.activeName;
+        },
         tagNavList () {
             return this.$store.state.tagNavList
         },
@@ -70,6 +72,9 @@ export default {
         }
     },
     methods: {
+        updateOpenName (name) {
+            this.$refs.sideMenu.updateOpenName(name);
+        },
         turnToPage (route) {
 
             let { name, params, query } = {}
@@ -106,13 +111,12 @@ export default {
             })
 
         },
-        // TODO 此处urls有时候找不到需要排查原因，怀疑算法或者是异步数据导致
         changeIframeUrl (name) {
             //递归寻找url
             let url = '';
             let findUrl = (data, name) => {
                 for (let item of data) {
-                    if (item.name === name) {
+                    if (item.name === name && item.meta.url !== '') {
                         url = item.meta.url;
                         break;
                     } else if (item.children) {
@@ -124,7 +128,6 @@ export default {
                 return url;
             }
             let urls = findUrl(this.menuList, name);
-            console.log(name, urls)
             if (url) {
                 this.iframe = urls;
             }

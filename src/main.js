@@ -6,6 +6,9 @@ import "@utils/global";
 import iview from "iview";
 import "iview/dist/styles/iview.css";
 
+import $config from "@utils/config";
+Vue.prototype.$config = $config;
+
 Vue.use(iview);
 
 Vue.config.productionTip = false;
