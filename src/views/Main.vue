@@ -167,15 +167,19 @@ export default {
     },
     async mounted () {
 
-        await this.getRouter();
-        this.setHomeRoute(this.routerList);
-        this.setBreadCrumb(this.$route);
-        // this.setTagNavList()
+
         this.getBasicInfo();
         this.getSchool();
         this.getApp();
         this.getPeople();
         this.getGreeting();
+
+        await this.getRouter();
+
+        this.setHomeRoute(this.routerList);
+        this.setBreadCrumb(this.$route);
+        // this.setTagNavList()
+
     }
 }
 </script>
