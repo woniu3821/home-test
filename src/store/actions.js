@@ -27,10 +27,9 @@ export default {
 
         const menuList = await registRouter(routers);
 
-        // console.log(menuList);
-
         commit("setOriginRouter", routers);
-        commit("setMenuList", menuList);
+
+        commit("setOriginMenuList", menuList);
     },
     async [INDEX_GET_BASIC_INFO]({ commit }, params = {}) {
         const [err, datas] = await getBasicInfo(params);

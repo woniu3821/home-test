@@ -26,7 +26,7 @@
                                 :key="item.id"
                                 :name="item.name"
                                 :to="item.path"
-                                @click.native="setMenuList(item.children)"
+                                @click.native="setMenuList(item)"
                             >
                             <Icon :type="item.meta.icon"></Icon>
                             <span>{{item.meta.title}}</span>

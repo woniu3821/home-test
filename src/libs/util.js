@@ -10,22 +10,25 @@ const { title, cookieExpires, useI18n } = config;
 export const TOKEN_KEY = "token";
 //处理转化路由数据
 export const setRoute = route => {
-    let translatorObj = (data, index) => ({
-        path: `/${data.path.split("#/")[1] || "home_0" + (index + 1)}`,
-        name: data.path.split("#/")[1] || `home_0${index + 1}`,
-        id: data.id,
-        parentId: data.parentId,
-        meta: {
-            icon: data.icon || "",
-            title: data.title,
-            url: data.path
-        },
-        component: Main
-    });
+    let translatorObj = (data, index) => {
+        return {
+            path: `/${data.path.split("#/")[1] || "home_0" + (index + 1)}`,
+            name: data.path.split("#/")[1] || `home_0${index + 1}`,
+            id: data.id,
+            parentId: data.parentId,
+            meta: {
+                icon: data.icon || "",
+                title: data.title,
+                url: data.path
+            },
+            component: Main
+        };
+    };
 
     let parents = route.filter(item => item.parentId === "" && item.canUsed).map(translatorObj);
 
     let children = route.filter(item => item.parentId !== "" && item.canUsed).map(translatorObj);
+
     let translator = (parents, children) => {
         parents.forEach(parent => {
             children.forEach((current, index) => {
@@ -42,7 +45,6 @@ export const setRoute = route => {
     };
 
     translator(parents, children);
-
     return parents;
 };
 
@@ -51,9 +53,8 @@ export const setRoute = route => {
  *  */
 export const getNavList = routes => {
     let oldRoute = routes.filter(route => /home_0\d/.test(route.name));
-
-    let initNav = routes => {
-        for (let route of routes) {
+    let initNav = data => {
+        for (let route of data) {
             if (/home_0\d/.test(route.name)) {
                 initNav(route.children);
             }
@@ -62,9 +63,10 @@ export const getNavList = routes => {
                 route.path = route.children[0].path;
             }
         }
-        return routes;
+        return data;
     };
-    return initNav(oldRoute);
+
+    return initNav(JSON.parse(JSON.stringify(oldRoute)));
     // return oldRoute;
 };
 

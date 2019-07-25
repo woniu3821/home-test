@@ -47,9 +47,12 @@ export default {
     setOriginRouter(state, payload) {
         state.routers = payload;
     },
+    setOriginMenuList(state, payload) {
+        state.menuList = payload;
+    },
     //更新左侧菜单
     setMenuList(state, payload) {
-        state.menuList = payload;
+        state.menuList = state.routers.filter(item => item.id === payload.id)[0].children;
     },
     /**
      * 更新menu激活菜单

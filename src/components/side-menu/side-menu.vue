@@ -64,8 +64,9 @@
                     placement="right"
                     :key="`drop-menu-${item.name}`"
                 >
+                    <!-- 此处将getNameOrHref的第二个参数改成了false兼容非href跳转 -->
                     <a
-                        @click="handleSelect(getNameOrHref(item, true))"
+                        @click="handleSelect(getNameOrHref(item, false))"
                         class="drop-menu-a"
                         :style="{textAlign: 'center'}"
                     >
@@ -133,10 +134,8 @@ export default {
         handleSelect (name) {
             this.$emit('on-select', name)
         },
-        //TODO 解决子菜单不展示问题
         getOpenedNamesByActiveName (name) {
             return this.$route.matched.map(item => item.name).filter(item => item !== name);
-            // return this.$route.matched.map(item => item.name)
         },
         updateOpenName (name) {
             if (name === this.$config.homeName) this.openedNames = []
