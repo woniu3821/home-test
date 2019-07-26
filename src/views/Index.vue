@@ -120,10 +120,29 @@ export default {
         openApp (app) {
             window.open(app.entranceUrl);
         },
+        async getBasicInfo () {
+            await this.$store.dispatch("index/get_basic_info")
+        },
+        async getSchool () {
+            await this.$store.dispatch("index/get_school_info");
+        },
+        async getPeople () {
+            await this.$store.dispatch("index/get_people_info");
+        },
+        async  getApp () {
+            await this.$store.dispatch("index/get_app_info");
+        },
+        async  getGreeting () {
+            await this.$store.dispatch("index/get_greeting_info");
+        },
     },
 
     mounted () {
-
+        this.getBasicInfo();
+        this.getSchool();
+        this.getApp();
+        this.getPeople();
+        this.getGreeting();
     }
 };
 </script>

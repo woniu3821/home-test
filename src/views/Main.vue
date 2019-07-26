@@ -6,7 +6,6 @@
             <Menu
                 mode="horizontal"
                 :active-name="activeName"
-                @on-select="menuChange"
             >
                 <div class="header__content">
                     <!-- 左侧logo -->
@@ -17,6 +16,7 @@
                             <MenuItem
                                 name="home"
                                 to="/home"
+                                @click.native="menuChange('home')"
                             >
                             <Icon type="ios-navigate"></Icon>
                             首页
@@ -26,12 +26,16 @@
                                 :key="item.id"
                                 :name="item.name"
                                 :to="item.path"
-                                @click.native="setMenuList(item)"
+                                @click.native="changeLayout(item)"
                             >
                             <Icon :type="item.meta.icon"></Icon>
                             <span>{{item.meta.title}}</span>
                             </MenuItem>
                         </nav>
+                        <fullscreen
+                            v-model="isFullscreen"
+                            style="margin-right: 10px;"
+                        />
                         <!-- 用户信息 -->
                         <user
                             :message-unread-count="unreadCount"
@@ -58,7 +62,8 @@ import User from '@/components/user'
 import HeaderLogo from '@components/header-logo'
 import Index from '@views/Index.vue'
 import Home from '@views/Home.vue'
-
+import LayoutContent from "@views/LayoutContent.vue"
+import fullscreen from '@/components/fullscreen'
 import routers from '@/router/routers'
 
 import { mapMutations, mapActions, mapState, mapGetters } from 'vuex'
@@ -68,11 +73,12 @@ export default {
         User,
         HeaderLogo,
         Index,
-        Home
+        Home,
+        LayoutContent,
+        fullscreen
     },
     watch: {
         '$route' (newRoute) {
-
             const { name, query, params, meta } = newRoute
             // this.addTag({
             //     route: { name, query, params, meta },
@@ -80,14 +86,13 @@ export default {
             // })
             this.updateActiveName(name);
             this.setBreadCrumb(newRoute);
-
-
             if (name === 'home') {
                 this.menuChange(name);
             } else {
                 //路由改变时候切换页面
                 this.$nextTick(() => {
                     setTimeout(() => {
+                        if (typeof this.$refs.home.changeIframeUrl !== 'function') return;
                         this.$refs.home.changeIframeUrl(name);
                         this.setActiveName(name);
                         this.$refs.home.updateOpenName(name);
@@ -108,7 +113,9 @@ export default {
             collapsed: false,
             maxLogo: require('@assets/img/cp-logo-old.png'),
             componentName: 'Index',
-            activeName: 'home'
+            activeName: 'home',
+            showContent: false,
+            isFullscreen: false
         }
     },
     computed: {
@@ -133,10 +140,23 @@ export default {
     methods: {
         ...mapMutations(['setHomeRoute', 'setBreadCrumb', 'setMenuList', 'setActiveName']),
         ...mapActions(['getRouter']),
+        changeLayout (item) {
+            if (item.children && item.children.length) {
+                this.showContent = false;
+            } else if (item.path) {
+                this.showContent = true;
+            } else {
+                this.errors('无效导航配置！');
+            }
+            this.setMenuList(item);
+            this.menuChange(item.name);
+        },
         menuChange (name) {
             //非首页切换到有导航的页面
             if (name === 'home') {
                 this.componentName = 'Index'
+            } else if (this.showContent) {
+                this.componentName = 'LayoutContent';
             } else {
                 this.componentName = 'Home';
             }
@@ -148,34 +168,12 @@ export default {
                 this.activeName = name;
             }
         },
-        async getBasicInfo () {
-            await this.$store.dispatch("index/get_basic_info")
-        },
-        async getSchool () {
-            await this.$store.dispatch("index/get_school_info");
-        },
-        async getPeople () {
-            await this.$store.dispatch("index/get_people_info");
-        },
-        async  getApp () {
-            await this.$store.dispatch("index/get_app_info");
-        },
-        async  getGreeting () {
-            await this.$store.dispatch("index/get_greeting_info");
-        },
+
 
     },
     async mounted () {
 
-
-        this.getBasicInfo();
-        this.getSchool();
-        this.getApp();
-        this.getPeople();
-        this.getGreeting();
-
         await this.getRouter();
-
         this.setHomeRoute(this.routerList);
         this.setBreadCrumb(this.$route);
         // this.setTagNavList()
@@ -193,6 +191,7 @@ export default {
     overflow: hidden;
     .layout__header {
         .header__content {
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;

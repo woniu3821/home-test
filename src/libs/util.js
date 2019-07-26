@@ -10,16 +10,24 @@ const { title, cookieExpires, useI18n } = config;
 export const TOKEN_KEY = "token";
 //处理转化路由数据
 export const setRoute = route => {
-    let translatorObj = (data, index) => {
+    let translatorObj = data => {
+        let path = data.path || data.href || "";
+        if (path && path.split("#/")[1]) {
+            path = path.split("#/")[1];
+        } else {
+            path = `home_0${data.id}`;
+        }
+
         return {
-            path: `/${data.path.split("#/")[1] || "home_0" + (index + 1)}`,
-            name: data.path.split("#/")[1] || `home_0${index + 1}`,
+            path: `/${path}`,
+            name: path,
             id: data.id,
             parentId: data.parentId,
             meta: {
                 icon: data.icon || "",
                 title: data.title,
-                url: data.path
+                url: data.path,
+                href: data.href || ""
             },
             component: Main
         };
@@ -55,7 +63,7 @@ export const getNavList = routes => {
     let oldRoute = routes.filter(route => /home_0\d/.test(route.name));
     let initNav = data => {
         for (let route of data) {
-            if (/home_0\d/.test(route.name)) {
+            if (/home_0\d/.test(route.name) && route.children) {
                 initNav(route.children);
             }
             if (route.children) {
@@ -87,8 +95,12 @@ export const registRouter = routes => {
     //此处需要注册不包含一级导航的完整路由
     return new Promise(resolve => {
         let menuRoute = routes.reduce((current, next) => {
-            if (/home_0\d/.test(next.name) && next.children) {
-                current = current.concat(next.children);
+            if (/home_0\d/.test(next.name)) {
+                if (next.children) {
+                    current = current.concat(next.children);
+                } else {
+                    current = current.concat([next]);
+                }
             }
             return current;
         }, []);

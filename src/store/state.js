@@ -1,4 +1,6 @@
 export default {
+    // 导航菜单url
+    url: "",
     //完整路由数据
     routers: [],
     //导航数据

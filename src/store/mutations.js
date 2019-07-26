@@ -52,7 +52,14 @@ export default {
     },
     //更新左侧菜单
     setMenuList(state, payload) {
-        state.menuList = state.routers.filter(item => item.id === payload.id)[0].children;
+        if (payload.children && payload.children.length) {
+            state.menuList = state.routers.filter(item => item.id === payload.id)[0].children;
+        } else {
+            this.commit("setLayout", payload.meta.url);
+        }
+    },
+    setLayout(state, payload) {
+        state.url = payload;
     },
     /**
      * 更新menu激活菜单

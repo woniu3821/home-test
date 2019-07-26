@@ -42,11 +42,13 @@
 <script>
 import SideMenu from '@/components/side-menu';
 import HeaderBar from '@/components/header-bar'
+
 import { } from "@api/service";
 export default {
     components: {
         SideMenu,
         HeaderBar,
+
     },
     name: "Home",
     props: {},
@@ -152,7 +154,7 @@ export default {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 61px);
+        height: calc(100vh - 60px);
         overflow: hidden;
         .content__bread {
             padding: 10px 0;
