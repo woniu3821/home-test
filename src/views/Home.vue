@@ -1,26 +1,28 @@
 <template>
     <div class="layout__container">
-        <aside class="container__aside">
-            <Sider
-                collapsible
-                :width="256"
-                :collapsed-width="64"
-                v-model="collapsed"
-                class="left-sider"
-                :style="{overflow: 'hidden'}"
-            >
-                <side-menu
-                    accordion
-                    ref="sideMenu"
-                    :active-name="activeLeftName"
-                    :collapsed="collapsed"
-                    @on-select="turnToPage"
-                    :menu-list="menuList"
+        <div class="aside">
+            <aside class="container__aside">
+                <Sider
+                    collapsible
+                    :width="256"
+                    :collapsed-width="64"
+                    v-model="collapsed"
+                    class="left-sider"
+                    :style="{overflow: 'hidden'}"
                 >
-                    <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
-                </side-menu>
-            </Sider>
-        </aside>
+                    <side-menu
+                        :accordion="false"
+                        ref="sideMenu"
+                        :active-name="activeLeftName"
+                        :collapsed="collapsed"
+                        @on-select="turnToPage"
+                        :menu-list="menuList"
+                    >
+                        <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
+                    </side-menu>
+                </Sider>
+            </aside>
+        </div>
         <div class="container__content">
             <div class="content__bread">
                 <header-bar :collapsed="collapsed"></header-bar>
@@ -146,9 +148,19 @@ export default {
     flex-grow: 1;
     display: flex;
     align-items: stretch;
+    .aside {
+        height: calc(100vh - 108px);
+        overflow: hidden;
+    }
     .container__aside {
         background: #011529;
         flex-shrink: 0;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .container__aside::-webkit-scrollbar {
+        width: 0;
     }
     .container__content {
         flex-grow: 1;
@@ -160,13 +172,11 @@ export default {
             padding: 10px 0;
         }
         .content__mian {
-            margin: 0 10px 10px;
             flex-grow: 1;
+            overflow-x: auto;
+            height: 100%;
             background: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-y: auto;
-            box-sizing: border-box;
+            // overflow: hidden;
         }
     }
 }
