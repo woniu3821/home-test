@@ -47,12 +47,14 @@
             </Menu>
         </header>
         <!-- 头部结束 -->
-        <transition name="fade">
-            <component
-                ref="home"
-                :is="currentTabComponent"
-            ></component>
-        </transition>
+        <div class="layout__body">
+            <transition name="fade">
+                <component
+                    ref="home"
+                    :is="currentTabComponent"
+                ></component>
+            </transition>
+        </div>
     </div>
 </template>
 <script>
@@ -190,12 +192,13 @@ export default {
     background: #f6f8fb;
     overflow: hidden;
     .layout__header {
+        height: 60px;
         .header__content {
-            height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin: 0 20px;
+            flex-wrap: nowrap;
             .layout-nav {
                 display: flex;
                 align-items: center;
@@ -204,6 +207,10 @@ export default {
                 }
             }
         }
+    }
+    .layout__body {
+        flex-grow: 1;
+        // overflow-y: auto;
     }
 }
 </style>

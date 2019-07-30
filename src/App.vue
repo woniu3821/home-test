@@ -19,10 +19,10 @@ export default {
 #app {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     top: 0;
     left: 0;
-    overflow-y: auto;
+    overflow-y: hidden;
     .router-link-exact-active {
         color: #1873e0;
     }

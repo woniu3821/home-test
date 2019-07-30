@@ -4,14 +4,14 @@
             <aside class="container__aside">
                 <Sider
                     collapsible
-                    :width="256"
+                    :width="236"
                     :collapsed-width="64"
                     v-model="collapsed"
                     class="left-sider"
                     :style="{overflow: 'hidden'}"
                 >
                     <side-menu
-                        :accordion="false"
+                        :accordion="true"
                         ref="sideMenu"
                         :active-name="activeLeftName"
                         :collapsed="collapsed"
@@ -30,6 +30,7 @@
             <div class="content__mian">
                 <!-- <keep-alive :include="cacheList"> -->
                 <iframe
+                    class="iframe"
                     :src="iframe"
                     frameborder="0"
                     width="100%"
@@ -144,17 +145,25 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+>>>.ivu-layout-sider-trigger {
+    position: absolute;
+    transition: background 0.3s;
+}
+>>>.ivu-layout-sider-trigger:hover {
+    background: #4b5467;
+}
+>>>.ivu-layout-sider {
+    min-height: 100%;
+}
 .layout__container {
     flex-grow: 1;
     display: flex;
-    align-items: stretch;
+    flex-direction: row;
     .aside {
-        height: calc(100vh - 108px);
-        overflow: hidden;
+        height: calc(100vh - 60px);
     }
     .container__aside {
         background: #011529;
-        flex-shrink: 0;
         height: 100%;
         overflow-x: hidden;
         overflow-y: auto;
@@ -163,20 +172,23 @@ export default {
         width: 0;
     }
     .container__content {
-        flex-grow: 1;
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
         height: calc(100vh - 60px);
-        overflow: hidden;
         .content__bread {
             padding: 10px 0;
         }
+        // TODO 需要确定最小宽度
         .content__mian {
             flex-grow: 1;
             overflow-x: auto;
-            height: 100%;
+            // height: 100%;
             background: #fff;
-            // overflow: hidden;
+            .iframe {
+                display: block;
+                // width: 1110px;
+            }
         }
     }
 }
