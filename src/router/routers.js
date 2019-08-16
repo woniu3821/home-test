@@ -45,10 +45,18 @@ export default [
     },
     {
         path: "*",
-        name: "error_404",
+        redirect: "/home",
+        name: "blank",
         meta: {
             hideInMenu: true
-        },
-        component: () => import("@components/error-page/404.vue")
+        }
     }
+    // {
+    //     path: "*",
+    //     name: "error_404",
+    //     meta: {
+    //         hideInMenu: true
+    //     },
+    //     component: () => import("@components/error-page/404.vue")
+    // }
 ];

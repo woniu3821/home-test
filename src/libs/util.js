@@ -82,14 +82,18 @@ export const getNavList = routes => {
 export const registRouter = routes => {
     //递归处理只有一个子集菜单的显示问题
     let showAlways = data => {
-        data.forEach(item => {
-            if (item.children && item.children.length) {
-                if (item.children.length === 1) {
-                    item.meta.showAlways = true;
+        trans(data);
+        function trans(data) {
+            data.forEach(item => {
+                if (item.children && item.children.length) {
+                    if (item.children.length === 1) {
+                        item.meta.showAlways = true;
+                    }
+                    trans(item.children);
                 }
-                showAlways(item.children);
-            }
-        });
+                item.component = Main;
+            });
+        }
         return data;
     };
     //此处需要注册不包含一级导航的完整路由
