@@ -9,6 +9,7 @@ const { title, cookieExpires, useI18n } = config;
 
 export const TOKEN_KEY = "token";
 //处理转化路由数据
+//TODO 调整路由算法
 export const setRoute = route => {
     let translatorObj = data => {
         let path = data.path || data.href || "";
@@ -28,8 +29,8 @@ export const setRoute = route => {
                 title: data.title,
                 url: data.path,
                 href: data.href || ""
-            },
-            component: Main
+            }
+            // component: Main
         };
     };
 
@@ -55,6 +56,21 @@ export const setRoute = route => {
     translator(parents, children);
     return parents;
 };
+
+//根据name寻找url
+export function findUrl(data, name) {
+    function findName(data, name) {
+        for (let item of data) {
+            if (item.name === name && item.meta.url !== "") {
+                return item.meta.url;
+            }
+            if (item.children && item.children.length) {
+                return findName(item.children, name);
+            }
+        }
+    }
+    return findName(data, name);
+}
 
 /**
  * 设置一级导航路由为子集的第一个路由
@@ -114,6 +130,23 @@ export const registRouter = routes => {
             resolve(dealRoute);
         });
     });
+};
+
+export const setNames = routes => {
+    let init = [config.homeName];
+    function findname(routes) {
+        return routes.reduce(function(prev, cur, index, arr) {
+            if (cur.name && prev.indexOf(cur.name) === -1) {
+                //去除重复名称
+                prev.push(cur.name);
+            }
+            if (cur.children && cur.children.length) {
+                findname(cur.children);
+            }
+            return prev;
+        }, init);
+    }
+    return findname(routes);
 };
 
 export const setToken = token => {

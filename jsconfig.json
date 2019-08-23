@@ -10,7 +10,8 @@
       "@utils/*": ["./src/utils/*"],
       "@views/*": ["./src/views/*"],
       "@mixins/*": ["./src/utils/mixins/*"],
-      "@api/*": ["./src/api/*"]
+      "@api/*": ["./src/api/*"],
+      "@libs/*": ["./src/libs/*"]
     }
   }
 }

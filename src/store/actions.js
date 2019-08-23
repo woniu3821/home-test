@@ -6,7 +6,7 @@ import {
     INDEX_GET_GREETING_INFO
 } from "./types";
 
-import { setRoute, registRouter } from "@/libs/util";
+import { setRoute, registRouter, setNames } from "@/libs/util";
 
 import axios from "@utils/ajax";
 
@@ -22,21 +22,25 @@ export default {
 
         //router不存在时重新拉取
         if (!storageRoutes.length) {
-            const [err, datas] = await awaitWrap(axios.post("/router/list"));
+            const [err, datas] = await awaitWrap(axios.post("/router/getBasicInfo"));
             if (err) {
                 Message.error(err || "导航初始化失败，请稍后重试！");
                 return;
             }
-            storageRoutes = setRoute(datas.rows);
+            storageRoutes = setRoute(datas.menus);
 
             sessionStorage.setItem("routes", JSON.stringify(storageRoutes));
         }
 
         const menuList = await registRouter(storageRoutes);
 
+        const names = setNames(menuList);
+
         commit("setOriginRouter", storageRoutes);
 
         commit("setOriginMenuList", menuList);
+
+        commit("setNames", names);
     },
     async [INDEX_GET_BASIC_INFO]({ commit }, params = {}) {
         const [err, datas] = await getBasicInfo(params);

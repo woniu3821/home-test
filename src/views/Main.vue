@@ -170,8 +170,6 @@ export default {
                 this.activeName = name;
             }
         },
-
-
     },
     async mounted () {
 

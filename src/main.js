@@ -6,6 +6,8 @@ import "@utils/global";
 import iview from "iview";
 import "iview/dist/styles/iview.css";
 
+import { listenerMessage } from "@utils";
+
 import $config from "@utils/config";
 Vue.prototype.$config = $config;
 
@@ -13,8 +15,10 @@ Vue.use(iview);
 
 Vue.config.productionTip = false;
 
-new Vue({
+const vm = new Vue({
     router,
     store,
     render: h => h(App)
 }).$mount("#app");
+
+vm.$nextTick(listenerMessage);

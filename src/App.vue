@@ -9,9 +9,9 @@ export default {
     methods: {
 
     },
-    // async mounted () {
-    //     await this.getRouter();
-    // }
+    async mounted () {
+        // await this.getRouter();
+    }
 }
 </script>
 

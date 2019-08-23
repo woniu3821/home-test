@@ -1,11 +1,15 @@
 <template>
-    <div class="base-pane" v-show="show" :style="contentStyle">
+    <div
+        class="base-pane"
+        v-show="show"
+        :style="contentStyle"
+    >
         <slot></slot>
     </div>
 </template>
 <script>
-import {} from "@api/service";
-import { findComponentUpward } from "@utils/assist";
+import { } from "@api/service";
+import { findComponentUpward } from "@libs/assist";
 export default {
     components: {},
     name: "BasePane",
@@ -23,40 +27,40 @@ export default {
             default: false
         }
     },
-    data() {
+    data () {
         return {
             show: true,
             currentName: this.name
         };
     },
     watch: {
-        name(val) {
+        name (val) {
             this.currentName = val;
             this.updateNav();
         },
-        label() {
+        label () {
             this.updateNav();
         },
 
-        disabled() {
+        disabled () {
             this.updateNav();
         }
     },
-    mounted() {
+    mounted () {
         this.updateNav();
     },
-    destroyed() {
+    destroyed () {
         this.updateNav();
     },
     computed: {
-        contentStyle() {
+        contentStyle () {
             return {
                 visibility: this.TabsInstance.activeKey !== this.currentName ? "hidden" : "visible"
             };
         }
     },
     methods: {
-        updateNav() {
+        updateNav () {
             this.TabsInstance.updateNav();
         }
     }

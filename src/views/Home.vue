@@ -31,6 +31,7 @@
                 <!-- <keep-alive :include="cacheList"> -->
                 <iframe
                     class="iframe"
+                    name="home_iframe"
                     :src="iframe"
                     frameborder="0"
                     width="100%"
@@ -46,12 +47,13 @@
 import SideMenu from '@/components/side-menu';
 import HeaderBar from '@/components/header-bar'
 
+import { findUrl } from '@libs/util'
+
 import { } from "@api/service";
 export default {
     components: {
         SideMenu,
         HeaderBar,
-
     },
     name: "Home",
     props: {},
@@ -80,6 +82,10 @@ export default {
         updateOpenName (name) {
             this.$refs.sideMenu.updateOpenName(name);
         },
+        changeUrl (url) {
+            this.iframe = url;
+            return this.listenIframeLoad();
+        },
         turnToPage (route) {
 
             let { name, params, query } = {}
@@ -102,38 +108,28 @@ export default {
 
         },
         listenIframeLoad () {
-            this.$nextTick(() => {
-                const iframe = this.$refs.iframe;
-                if (iframe.attachEvent) {
-                    iframe.attachEvent("onload", function () {
-                        console.log("Local iframe is now loaded.");
-                    });
-                } else {
-                    iframe.onload = function () {
-                        console.log("Local iframe is now loaded.");
-                    };
-                }
+            return new Promise((resolve, reject) => {
+                this.$nextTick(() => {
+                    const iframe = this.$refs.iframe;
+                    if (iframe.attachEvent) {
+                        iframe.attachEvent("onload", function () {
+                            resolve()
+                        });
+                    } else {
+                        iframe.onload = function () {
+                            resolve()
+                        };
+                    }
+                })
+
             })
 
         },
         changeIframeUrl (name) {
             //递归寻找url
-            let url = '';
-            let findUrl = (data, name) => {
-                for (let item of data) {
-                    if (item.name === name && item.meta.url !== '') {
-                        url = item.meta.url;
-                        break;
-                    } else if (item.children) {
-                        findUrl(item.children, name)
-                    } else {
-                        continue;
-                    }
-                }
-                return url;
-            }
             let urls = findUrl(this.menuList, name);
-            if (url) {
+            console.log(urls)
+            if (urls) {
                 this.iframe = urls;
             }
         }
@@ -179,7 +175,6 @@ export default {
         .content__bread {
             padding: 10px 0;
         }
-        // TODO 需要确定最小宽度
         .content__mian {
             flex-grow: 1;
             overflow-x: auto;

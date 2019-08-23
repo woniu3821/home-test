@@ -16,12 +16,12 @@
     </div>
 </template>
 <script>
-import {} from "@api/service";
-import { findComponentsDownward } from "@utils/assist";
+import { } from "@api/service";
+import { findComponentsDownward } from "@libs/assist";
 export default {
     components: {},
     name: "BaseTabs",
-    provide() {
+    provide () {
         return { TabsInstance: this };
     },
     props: {
@@ -30,17 +30,17 @@ export default {
             default: 0
         }
     },
-    data() {
+    data () {
         return {
             navList: [],
             activeKey: this.value
         };
     },
     watch: {
-        value(val) {
+        value (val) {
             this.activeKey = val;
         },
-        activeKey(val) {
+        activeKey (val) {
             this.updateStatus();
             // update visibility
             const nextIndex = Math.max(this.getTabIndex(val), 0);
@@ -48,10 +48,10 @@ export default {
         }
     },
     methods: {
-        getTabIndex(name) {
+        getTabIndex (name) {
             return this.navList.findIndex(nav => nav.name === name);
         },
-        getTabs() {
+        getTabs () {
             // return this.$children.filter(item => item.$options.name === 'TabPane');
             const AllTabPanes = findComponentsDownward(this, "BasePane");
             const TabPanes = [];
@@ -74,7 +74,7 @@ export default {
             });
             return TabPanes;
         },
-        updateNav() {
+        updateNav () {
             this.navList = [];
             this.getTabs().forEach((pane, index) => {
                 this.navList.push({
@@ -91,7 +91,7 @@ export default {
             });
             this.updateStatus();
         },
-        updateVisibility(index) {
+        updateVisibility (index) {
             [...this.$refs.panes.querySelectorAll(`.base-pane`)].forEach((el, i) => {
                 if (index === i) {
                     [...el.children]
@@ -104,11 +104,11 @@ export default {
                 }
             });
         },
-        updateStatus() {
+        updateStatus () {
             const tabs = this.getTabs();
             tabs.forEach(tab => (tab.show = tab.currentName === this.activeKey || this.animated));
         },
-        tabChange(index) {
+        tabChange (index) {
             const nav = this.navList[index];
             if (nav.disabled) return;
             this.activeKey = nav.name;
@@ -118,7 +118,7 @@ export default {
             this.updateVisibility(index);
         }
     },
-    mounted() {
+    mounted () {
         this.updateVisibility(this.getTabIndex(this.activeKey));
     }
 };

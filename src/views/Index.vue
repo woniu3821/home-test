@@ -138,6 +138,7 @@ export default {
     },
 
     mounted () {
+
         this.getBasicInfo();
         this.getSchool();
         this.getApp();

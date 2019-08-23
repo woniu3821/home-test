@@ -21,6 +21,7 @@ module.exports = {
             .set("@components", resolve("src/components"))
             .set("@assets", resolve("src/assets"))
             .set("@utils", resolve("src/utils"))
+            .set("@libs", resolve("src/libs"))
             .set("@api", resolve("src/api"))
             .set("@", resolve("src")) // key,value自行定义，比如.set('@@', resolve('src/components'))
             .set("_c", resolve("src/components"));
@@ -52,8 +53,8 @@ module.exports = {
         // 本地开发代理地址
         proxy: {
             [config.baseUrl]: {
-                target: "http://iwecloud1:31214/",
-                // target: "http://172.20.6.88:8080",
+                target: "http://172.20.6.240:8080",
+                // target: "http://iwecloud11:31569/",
                 // target: "https://www.easy-mock.com/mock/5d31907e3329c1415ac93f01/image", // easy-mock
                 changeOrigin: true
             },

@@ -7,6 +7,8 @@ export default {
     navList: [],
     //菜单路由
     menuList: [],
+    //路由name集合
+    routeNames: [],
     //激活的菜单
     activeName: "",
     access: "",

@@ -50,6 +50,10 @@ export default {
     setOriginMenuList(state, payload) {
         state.menuList = payload;
     },
+    setNames(state, payload) {
+        console.log(payload);
+        state.routeNames = payload;
+    },
     //更新左侧菜单
     setMenuList(state, payload) {
         if (payload.children && payload.children.length) {
