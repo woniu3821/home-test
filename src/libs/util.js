@@ -4,82 +4,90 @@ import Main from "@views/Main.vue";
 import router from "../router";
 // cookie保存的天数
 import config from "@utils/config";
-import { forEach, hasOneOf, objEqual } from "@/libs/tools";
+import { forEach, hasOneOf, objEqual, genID } from "@/libs/tools";
 const { title, cookieExpires, useI18n } = config;
+
+const regHome = /home_[\d\w]+/;
 
 export const TOKEN_KEY = "token";
 //处理转化路由数据
-//TODO 调整路由算法
 export const setRoute = route => {
-    let translatorObj = data => {
-        let path = data.path || data.href || "";
-        if (path && path.split("#/")[1]) {
-            path = path.split("#/")[1];
-        } else {
-            path = `home_0${data.id}`;
-        }
+    let parents = route.filter(item => item.canUsed);
 
-        return {
-            path: `/${path}`,
-            name: path,
-            id: data.id,
-            parentId: data.parentId,
-            meta: {
-                icon: data.icon || "",
-                title: data.title,
-                url: data.path,
-                href: data.href || ""
-            }
-            // component: Main
-        };
-    };
+    function trans(data) {
+        return data.map(parent => {
+            let { title, icon, path, isLeaf } = parent;
 
-    let parents = route.filter(item => item.parentId === "" && item.canUsed).map(translatorObj);
-
-    let children = route.filter(item => item.parentId !== "" && item.canUsed).map(translatorObj);
-
-    let translator = (parents, children) => {
-        parents.forEach(parent => {
-            children.forEach((current, index) => {
-                if (current.parentId === parent.id) {
-                    let temp = JSON.parse(JSON.stringify(children));
-                    temp.splice(index, 1);
-                    translator([current], temp);
-                    typeof parent.children !== "undefined"
-                        ? parent.children.push(current)
-                        : (parent.children = [current]);
+            let obj = {
+                path: "",
+                name: "",
+                id: genID(),
+                meta: {
+                    icon: icon || "",
+                    title: title,
+                    url: path,
+                    href: !!path && path.startsWith("_") ? path.substr(1) : "",
+                    isLeaf: !!isLeaf
                 }
-            });
-        });
-    };
+            };
 
-    translator(parents, children);
-    return parents;
+            if (!!isLeaf && path && path.split("#/")[1]) {
+                path = path.split("#/")[1];
+            } else {
+                path = `home_0${genID()}`;
+            }
+
+            obj.path = `/${path}`;
+
+            obj.name = path;
+
+            if (parent.children && parent.children.length > 0) {
+                //递归处理只有一个子集菜单的显示问题
+                if (parent.children.length === 1) {
+                    obj.meta.showAlways = true;
+                }
+                obj.children = trans(parent.children);
+            }
+
+            return obj;
+        });
+    }
+
+    const transData = trans(parents);
+
+    return transData;
 };
 
 //根据name寻找url
 export function findUrl(data, name) {
+    let url = "";
+
     function findName(data, name) {
         for (let item of data) {
             if (item.name === name && item.meta.url !== "") {
-                return item.meta.url;
+                url = item.meta.url;
+                break;
             }
+
             if (item.children && item.children.length) {
-                return findName(item.children, name);
+                findName(item.children, name);
             }
         }
     }
-    return findName(data, name);
+
+    findName(data, name);
+
+    return url;
 }
 
 /**
  * 设置一级导航路由为子集的第一个路由
- *  */
+ */
 export const getNavList = routes => {
-    let oldRoute = routes.filter(route => /home_0\d/.test(route.name));
+    let oldRoute = routes.filter(route => regHome.test(route.name));
     let initNav = data => {
         for (let route of data) {
-            if (/home_0\d/.test(route.name) && route.children) {
+            if (regHome.test(route.name) && route.children) {
                 initNav(route.children);
             }
             if (route.children) {
@@ -91,43 +99,27 @@ export const getNavList = routes => {
     };
 
     return initNav(JSON.parse(JSON.stringify(oldRoute)));
-    // return oldRoute;
 };
 
-//注册路由
+//注册完整路由
 export const registRouter = routes => {
-    //递归处理只有一个子集菜单的显示问题
-    let showAlways = data => {
-        trans(data);
-        function trans(data) {
-            data.forEach(item => {
-                if (item.children && item.children.length) {
-                    if (item.children.length === 1) {
-                        item.meta.showAlways = true;
-                    }
-                    trans(item.children);
+    return new Promise(resolve => {
+        function addComponent(routes) {
+            return routes.map(it => {
+                it.component = Main;
+                if (it.children && it.children.length) {
+                    it.children = addComponent(it.children);
                 }
-                item.component = Main;
+                return it;
             });
         }
-        return data;
-    };
-    //此处需要注册不包含一级导航的完整路由
-    return new Promise(resolve => {
-        let menuRoute = routes.reduce((current, next) => {
-            if (/home_0\d/.test(next.name)) {
-                if (next.children) {
-                    current = current.concat(next.children);
-                } else {
-                    current = current.concat([next]);
-                }
-            }
-            return current;
-        }, []);
-        let dealRoute = showAlways(menuRoute);
-        router.addRoutes(dealRoute);
+
+        let menuRoute = addComponent(routes);
+
+        router.addRoutes(menuRoute);
+
         router.onReady(function() {
-            resolve(dealRoute);
+            resolve(menuRoute);
         });
     });
 };

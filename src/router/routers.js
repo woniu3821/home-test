@@ -10,6 +10,7 @@ export default [
             icon: "md-home",
             title: "首页",
             hideInMenu: true
+            // hideInBread: true
         },
         component: Main,
         children: [

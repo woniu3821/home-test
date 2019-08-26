@@ -51,7 +51,6 @@ export default {
         state.menuList = payload;
     },
     setNames(state, payload) {
-        console.log(payload);
         state.routeNames = payload;
     },
     //更新左侧菜单
