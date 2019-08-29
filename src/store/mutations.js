@@ -89,8 +89,10 @@ export default {
     setActiveName(state, payload) {
         state.activeName = payload;
     },
+    setRedirect(state, payload) {
+        state.redirectName = payload;
+    },
     [INDEX_GET_BASIC_INFO](state, payload) {
-        state.menus = payload.menus;
         state.user = Object.assign(state.user, payload.user);
         state.logoUrl = payload.logoUrl;
         state.schoolName = payload.schoolName;

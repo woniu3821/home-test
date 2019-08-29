@@ -37,10 +37,12 @@
                         :name="getNameOrHref(item)"
                         :key="`menu-${item.name}`"
                     >
-                        <common-icon :type="item.icon || ''" /><span>{{ showTitle(item) }}</span></menu-item>
+                        <common-icon :type="item.icon || ''" />
+                        <span>{{ showTitle(item) }}</span></menu-item>
                 </template>
             </template>
         </Menu>
+
         <div
             class="menu-collapsed"
             v-show="collapsed"
@@ -73,8 +75,9 @@
                         <common-icon
                             :size="rootIconSize"
                             :color="textColor"
-                            :type="item.icon || (item.children && item.children[0].icon)"
-                        /></a>
+                            :type="item.icon || (item.children && item.children[0].icon)||''"
+                        />
+                    </a>
                 </Tooltip>
             </template>
         </div>

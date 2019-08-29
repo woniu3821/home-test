@@ -1,4 +1,6 @@
 export default {
+    //默认重定向地址
+    redirectName: "",
     //是否已经注册了路由
     hasRegister: false,
     // 导航菜单url

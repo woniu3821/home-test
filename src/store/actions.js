@@ -21,15 +21,19 @@ export default {
         let storageRoutes = JSON.parse(sessionStorage.getItem("routes") || "[]");
 
         //router不存在时重新拉取
-        if (!storageRoutes.length) {
-            // const [err, datas] = await getBasicInfo(params);
-            const [err, datas] = await awaitWrap(axios.post("/router/getBasicInfo"));
+        if (!storageRoutes.length || !state.schoolName) {
+            const [err, datas] = await getBasicInfo(params);
+            // const [err, datas] = await awaitWrap(axios.post("/router/getBasicInfo"));
             if (err) {
                 Message.error(err || "导航初始化失败，请稍后重试！");
                 return;
             }
-            // storageRoutes = setRoute(datas.menus);
-            storageRoutes = setRoute(datas.rows);
+            storageRoutes = setRoute(datas.menus);
+
+            //更新登录信息
+            commit(INDEX_GET_BASIC_INFO, datas);
+
+            // storageRoutes = setRoute(datas.rows);
 
             sessionStorage.setItem("routes", JSON.stringify(storageRoutes));
         }
@@ -47,6 +51,8 @@ export default {
         commit("setOriginMenuList", menuList);
 
         commit("setNames", names);
+        //设置默认重定向地址
+        commit("setRedirect", names[1] || "");
     },
     async [INDEX_GET_BASIC_INFO]({ commit }, params = {}) {
         const [err, datas] = await getBasicInfo(params);

@@ -19,5 +19,9 @@ module.exports = {
     /**
      * @description 默认打开的首页的路由name值，默认为home
      */
-    homeName: "home"
+    homeName: "home",
+    /**
+     * @description 默认重定向地址
+     */
+    redirectName: ""
 };

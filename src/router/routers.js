@@ -1,10 +1,5 @@
 import Main from "@views/Main.vue";
 // import Home from "@views/Home.vue";
-
-import config from "@utils/config";
-
-const home = config.homeName;
-
 export default [
     {
         path: "/home",
@@ -26,6 +21,13 @@ export default [
         component: () => import("@components/error-page/401.vue")
     },
     {
+        path: "/700",
+        name: "700",
+        meta: {
+            hideInMenu: true
+        }
+    },
+    {
         path: "/500",
         name: "error_500",
         meta: {
@@ -38,7 +40,8 @@ export default [
         redirect: "/home",
         name: "blank",
         meta: {
-            hideInMenu: true
+            hideInMenu: true,
+            hideInBread: true
         }
     }
     // {

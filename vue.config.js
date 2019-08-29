@@ -64,11 +64,11 @@ module.exports = {
             }
         }
     },
-    // 解决架子自适应宽度
-    configureWebpack: {
-        externals: {
-            jQuery: "jquery",
-            $: "jquery"
-        }
-    }
+
+    // configureWebpack: {
+    //     externals: {
+    //         jQuery: "jquery",
+    //         $: "jquery"
+    //     }
+    // }
 };

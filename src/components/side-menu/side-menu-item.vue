@@ -16,7 +16,9 @@
                     :name="getNameOrHref(item, true)"
                     :key="`menu-${item.children[0].name}`"
                 >
-                    <common-icon :type="item.children[0].icon || ''" /><span>{{ showTitle(item.children[0]) }}</span></menu-item>
+                    <common-icon :type="item.children[0].icon || ''" />
+
+                    <span>{{ showTitle(item.children[0]) }}</span></menu-item>
             </template>
             <template v-else>
                 <side-menu-item
@@ -29,7 +31,8 @@
                     :name="getNameOrHref(item)"
                     :key="`menu-${item.name}`"
                 >
-                    <common-icon :type="item.icon || ''" /><span>{{ showTitle(item) }}</span></menu-item>
+                    <common-icon :type="item.icon || ''" />
+                    <span>{{ showTitle(item) }}</span></menu-item>
             </template>
         </template>
     </Submenu>
