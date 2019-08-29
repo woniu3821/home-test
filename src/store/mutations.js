@@ -3,7 +3,8 @@ import {
     setTagNavListInLocalstorage,
     // getMenuByRouter,
     getTagNavListFromLocalstorage,
-    getHomeRoute
+    getHomeRoute,
+    finSideMenu
     // getNextRoute,
     // routeHasExist,
     // routeEqual,
@@ -20,10 +21,17 @@ import {
     INDEX_GET_PEOPLE_INFO,
     INDEX_GET_GREETING_INFO
 } from "./types";
+import { Message, Notice } from "iview";
 
 const { homeName } = config;
 
 export default {
+    changeNavActiveName(state, payload) {
+        state.navActiveName = payload;
+    },
+    changeRegister(state) {
+        state.hasRegister = true;
+    },
     setBreadCrumb(state, route) {
         state.breadCrumbList = getBreadCrumbList(route, state.homeRoute);
     },
@@ -55,10 +63,19 @@ export default {
     },
     //更新左侧菜单
     setMenuList(state, payload) {
-        if (payload.children && payload.children.length) {
-            state.menuList = state.routers.filter(item => item.id === payload.id)[0].children;
-        } else {
-            this.commit("setLayout", payload.meta.url);
+        try {
+            const parent = finSideMenu(state.routers, payload);
+            if (parent) {
+                this.commit("changeNavActiveName", parent.id);
+
+                if (parent.children) {
+                    state.menuList = parent.children;
+                } else if (payload.meta.parentId === "0") {
+                    this.commit("setLayout", payload.meta.url);
+                }
+            }
+        } catch (error) {
+            Notice.error("导航错误");
         }
     },
     setLayout(state, payload) {

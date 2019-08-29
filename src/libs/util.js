@@ -16,25 +16,27 @@ export const setRoute = route => {
 
     function trans(data) {
         return data.map(parent => {
-            let { title, icon, path, isLeaf } = parent;
+            let { title, icon, path, isLeaf, parentId } = parent;
 
             let obj = {
                 path: "",
                 name: "",
                 id: genID(),
                 meta: {
+                    parentId: parentId || "",
                     icon: icon || "",
-                    title: title,
+                    title,
                     url: path,
                     href: !!path && path.startsWith("_") ? path.substr(1) : "",
-                    isLeaf: !!isLeaf
+                    isLeaf: !!isLeaf,
+                    hasChild: !!hasChild(parent)
                 }
             };
 
             if (!!isLeaf && path && path.split("#/")[1]) {
                 path = path.split("#/")[1];
             } else {
-                path = `home_0${genID()}`;
+                path = `home_0${obj.id}`;
             }
 
             obj.path = `/${path}`;
@@ -80,11 +82,39 @@ export function findUrl(data, name) {
     return url;
 }
 
+export function finSideMenu(data, route) {
+    let parents = data.filter(it => it.meta && it.meta.parentId === "0");
+
+    let name = route.name;
+
+    function concatChild(data) {
+        let arr = [];
+        data.forEach(next => {
+            if (next.children && next.children.length) {
+                arr = arr.concat(concatChild(next.children));
+            }
+            arr.push(next);
+        });
+
+        return arr;
+    }
+
+    let parent = parents.find(it => {
+        if (it.name === name) {
+            return true;
+        } else if (it.children && it.children.length) {
+            return concatChild(it.children).some(it => it.name === name);
+        }
+    });
+    return parent;
+}
+
 /**
  * 设置一级导航路由为子集的第一个路由
  */
 export const getNavList = routes => {
     let oldRoute = routes.filter(route => regHome.test(route.name));
+
     let initNav = data => {
         for (let route of data) {
             if (regHome.test(route.name) && route.children) {
@@ -215,7 +245,8 @@ export const getBreadCrumbList = (route, homeRoute) => {
     res = res.filter(item => {
         return !item.meta.hideInMenu;
     });
-    return [{ ...homeItem, to: homeRoute.path }, ...res];
+    //此处增加首页可配修改 bak [{ ...homeItem, to: homeRoute.path }, ...res]
+    return homeItem.meta.hideInBread ? res : [{ ...homeItem, to: homeRoute.path }, ...res];
 };
 
 export const getRouteTitleHandled = route => {

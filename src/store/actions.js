@@ -17,22 +17,28 @@ import { getBasicInfo, getSchoolInfo, getPeopleInfo, getAppInfo, getGreeting } f
 import { Message } from "iview";
 
 export default {
-    async getRouter({ commit }, params = {}) {
+    async getRouter({ commit, state }, params = {}) {
         let storageRoutes = JSON.parse(sessionStorage.getItem("routes") || "[]");
 
         //router不存在时重新拉取
         if (!storageRoutes.length) {
+            // const [err, datas] = await getBasicInfo(params);
             const [err, datas] = await awaitWrap(axios.post("/router/getBasicInfo"));
             if (err) {
                 Message.error(err || "导航初始化失败，请稍后重试！");
                 return;
             }
-            storageRoutes = setRoute(datas.menus);
+            // storageRoutes = setRoute(datas.menus);
+            storageRoutes = setRoute(datas.rows);
 
             sessionStorage.setItem("routes", JSON.stringify(storageRoutes));
         }
+        //防止重复注册路由
+        if (state.hasRegister) return;
 
         const menuList = await registRouter(storageRoutes);
+
+        commit("changeRegister");
 
         const names = setNames(menuList);
 

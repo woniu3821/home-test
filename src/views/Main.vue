@@ -13,29 +13,28 @@
                     <!-- nav -->
                     <div class="layout-nav">
                         <nav>
-                            <MenuItem
+                            <!-- <MenuItem
                                 name="home"
                                 to="/home"
                                 @click.native="menuChange('home')"
                             >
                             <Icon type="ios-navigate"></Icon>
                             首页
-                            </MenuItem>
+                            </MenuItem> -->
                             <MenuItem
                                 v-for="item in navList"
                                 :key="item.id"
-                                :name="item.name"
+                                :name="item.id"
                                 :to="item.path"
-                                @click.native="changeLayout(item)"
                             >
                             <Icon :type="item.meta.icon"></Icon>
                             <span>{{item.meta.title}}</span>
                             </MenuItem>
                         </nav>
-                        <fullscreen
+                        <!-- <fullscreen
                             v-model="isFullscreen"
                             style="margin-right: 10px;"
-                        />
+                        /> -->
                         <!-- 用户信息 -->
                         <user
                             :message-unread-count="unreadCount"
@@ -86,30 +85,33 @@ export default {
             //     route: { name, query, params, meta },
             //     type: 'push'
             // })
-            this.updateActiveName(name);
-            this.setBreadCrumb(newRoute);
-            if (name === 'home') {
+
+            // } else {
+            //路由改变时候切换页面
+            this.$nextTick(() => {
+
                 this.menuChange(name);
-            } else {
-                //路由改变时候切换页面
-                this.$nextTick(() => {
-                    setTimeout(() => {
-                        if (typeof this.$refs.home.changeIframeUrl !== 'function') return;
-                        this.$refs.home.changeIframeUrl(name);
-                        this.setActiveName(name);
-                        this.$refs.home.updateOpenName(name);
-                    })
+
+                this.setMenuList(newRoute);
+
+                this.updateActiveName(name);
+
+
+                this.setBreadCrumb(newRoute);
+
+                setTimeout(() => {
+                    if (typeof this.$refs.home.changeIframeUrl !== 'function') return;
+                    this.$refs.home.changeIframeUrl(name);
+                    this.setActiveName(name);
+                    this.$refs.home.updateOpenName(name);
                 })
-            }
+            })
+            // }
 
             //   this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
 
         }
     },
-    // beforeRouteLeave (to, from, next) {
-    //     console.log(333)
-    //     next()
-    // },
     data () {
         return {
             collapsed: false,
@@ -117,7 +119,7 @@ export default {
             componentName: 'Index',
             activeName: 'home',
             showContent: false,
-            isFullscreen: false
+            isFullscreen: false,
         }
     },
     computed: {
@@ -133,7 +135,8 @@ export default {
             return this.componentName
         },
         navListTag () {
-            return ['home', ...this.navList.map(item => item.name)]
+            return this.navList.map(item => item.id)
+            // return ['home', ...this.navList.map(item => item.id)]
         },
         routerList () {
             return [...routers, ...this.menuList]
@@ -142,18 +145,13 @@ export default {
     methods: {
         ...mapMutations(['setHomeRoute', 'setBreadCrumb', 'setMenuList', 'setActiveName']),
         ...mapActions(['getRouter']),
-        changeLayout (item) {
-            if (item.children && item.children.length) {
-                this.showContent = false;
-            } else if (item.path) {
-                this.showContent = true;
-            } else {
-                this.errors('无效导航配置！');
-            }
-            this.setMenuList(item);
-            this.menuChange(item.name);
-        },
         menuChange (name) {
+            let parent = this.navList.find(it => it.name === name)
+            if (parent) {
+                this.showContent = !parent.meta.hasChild;
+            } else {
+                this.showContent = false;
+            }
             //非首页切换到有导航的页面
             if (name === 'home') {
                 this.componentName = 'Index'
@@ -163,17 +161,15 @@ export default {
                 this.componentName = 'Home';
             }
         },
+
         //更新导航名称
-        updateActiveName (name) {
-            //解决name值不变化不更新问题
-            if (this.navListTag.includes(name)) {
-                this.activeName = name;
-            }
+        updateActiveName () {
+            this.activeName = this.$store.state.navActiveName;
         },
     },
     async mounted () {
 
-        await this.getRouter();
+
         this.setHomeRoute(this.routerList);
         this.setBreadCrumb(this.$route);
         // this.setTagNavList()

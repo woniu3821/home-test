@@ -1,6 +1,10 @@
 export default {
+    //是否已经注册了路由
+    hasRegister: false,
     // 导航菜单url
     url: "",
+    //导航activeName
+    navActiveName: "",
     //完整路由数据
     routers: [],
     //导航数据

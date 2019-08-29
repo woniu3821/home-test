@@ -16,7 +16,9 @@ import {
 // import routers from "@/router/routers";
 
 export default {
-    menuList: (state, getters, rootState) => getMenuByRouter(rootState.menuList, rootState.access),
+    menuList: (state, getters, rootState) => {
+        return getMenuByRouter(rootState.menuList, rootState.access);
+    },
     navList: (state, getters, rootState) => {
         return getNavList(state.routers);
     }

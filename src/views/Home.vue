@@ -132,7 +132,6 @@ export default {
         changeIframeUrl (name) {
             //递归寻找url
             let urls = findUrl(this.menuList, name);
-            console.log(urls)
             if (urls) {
                 this.iframe = urls;
             }
